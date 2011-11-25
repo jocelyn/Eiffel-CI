@@ -1,9 +1,6 @@
 #!/usr/local/bin/python
 # Small python-script run all tests using ec (the Eiffel compiler) 
 # we assume that ec outputs everything in english!
-# 
-# Code ported from a ruby script by Niklaus Giger
-
 # For the command line options look at
 # http://docs.eiffel.com/book/eiffelstudio/eiffelstudio-command-line-options
 # we use often the -batch open.
@@ -127,4 +124,4 @@ def runTestForProject(where):
 	print "# End..."
 
 if __name__ == '__main__':
-	runTestForProject(os.getcwd)
+	runTestForProject(os.getcwd())

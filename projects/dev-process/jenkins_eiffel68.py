@@ -127,4 +127,4 @@ def runTestForProject(where):
 	print "# End..."
 
 if __name__ == '__main__':
-	runTestForProject(os.getcwd)
+	runTestForProject(os.getcwd())
