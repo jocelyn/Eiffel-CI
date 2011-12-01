@@ -80,6 +80,14 @@ def runTestForProject(where):
 		print "## Cleaning previous tests"
 		rm_dir("EIFGENs")
 
+	# compile the restbucks
+	print "# Compiling restbucks example"
+	cmd = "ecb -config %s -target restbucks -batch -c_compile -project_path . " % (os.path.join ("examples", "restbucks", "restbucks-safe.ecf"))
+	res = eval_cmd(cmd)
+
+	sleep(1)
+		
+
 	print "# check compile_all tests"
 	if not os.path.exists(os.path.join ("tests", "temp")):
 		os.makedirs (os.path.join ("tests", "temp"))
@@ -87,10 +95,7 @@ def runTestForProject(where):
 	(res, res_output) = eval_cmd_output("compile_all -version", True)
 	print res_output
 
-
-	cmd = "compile_all -ecb -melt -eifgen %s -ignore %s " % (os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini -log_verbose -list_failures"))
-	if keep_all:
-		cmd = "%s -keep passed" % (cmd) # forget about failed one .. we'll try again next time
+	cmd = "compile_all -ecb -melt -eifgen %s -ignore %s " % (os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini"))
 	if clobber:
 		cmd = "%s -clean" % (cmd)
 	print "command: %s" % (cmd)
