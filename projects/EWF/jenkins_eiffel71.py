@@ -44,22 +44,11 @@ def eval_cmd(cmd):
 		report_failure ("Failed running: %s (returncode=%s)" % (cmd, res), 2)
 	return res
 
-def eval_cmd_output(cmd, ignore_error=False, display_as_it_execute=False):
+def eval_cmd_output(cmd, ignore_error=False):
 	#  print cmd
 	p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	if p:
-		if display_as_it_execute:
-			stdout = []
-			while True:
-				line = p.stdout.readline()
-				stdout.append(line)
-				print "%s" % (line),
-				if line == '' and p.poll() != None:
-					break
-			o = ''.join(stdout)
-		else:
-			o = p.communicate()[0]
-
+		o = p.communicate()[0]
 		return [p.returncode, o]
 	else:
 		if not ignore_error:
@@ -115,7 +104,7 @@ def runTestForProject(where):
 	if clobber:
 		cmd = "%s -clean" % (cmd)
 	print "command: %s" % (cmd)
-	(res, res_output) = eval_cmd_output(cmd, False, True)
+	(res, res_output) = eval_cmd_output(cmd)
 	if res != 0:
 		report_failure("compile_all failed", 2)
 
