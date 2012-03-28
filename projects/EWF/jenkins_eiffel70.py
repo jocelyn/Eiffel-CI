@@ -69,6 +69,12 @@ def rm_dir(d):
 	if os.path.isdir(d):
 		shutil.rmtree(d)
 
+def ecb_command():
+	return os.path.join (os.environ['ISE_EIFFEL'],"studio", "spec", os.environ['ISE_PLATFORM'], "bin", "ecb")
+
+def compile_all_command():
+	return os.path.join (os.environ['ISE_EIFFEL'],"tools", "spec", os.environ['ISE_PLATFORM'], "bin", "compile_all")
+
 def runTestForProject(where):
 	if not os.path.isdir(where):
 		report_failure ("Directory %s does not exist" % (where), 2)
@@ -95,21 +101,20 @@ def runTestForProject(where):
 		rm_dir("EIFGENs")
 
 	# compile the restbucks
-	print "# Compiling restbucks example"
-	cmd = "ecb -config %s -target restbucks -batch -c_compile -project_path . " % (os.path.join ("examples", "restbucksCRUD", "restbucks-safe.ecf"))
-	res = eval_cmd(cmd)
-
-	sleep(1)
+	#print "# Compiling restbucks example"
+	#cmd = "%s -config %s -target restbucks -batch -c_compile -project_path . " % (ecb_command(), os.path.join ("examples", "restbucksCRUD", "restbucks-safe.ecf"))
+	#res = eval_cmd(cmd)
+	#sleep(1)
 		
 
 	print "# check compile_all tests"
 	if not os.path.exists(os.path.join ("tests", "temp")):
 		os.makedirs (os.path.join ("tests", "temp"))
 
-	(res, res_output) = eval_cmd_output("compile_all -version", True)
+	(res, res_output) = eval_cmd_output("%s -version" %(compile_all_command()), True)
 	print res_output
 
-	cmd = "compile_all -ecb -melt -eifgen %s -ignore %s " % (os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini"))
+	cmd = "%s -ecb -melt -eifgen %s -ignore %s " % (compile_all_command(), os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini"))
 	if keep_all:
 		cmd = "%s -keep passed" % (cmd) # forget about failed one .. we'll try again next time
 	if clobber:

@@ -44,11 +44,22 @@ def eval_cmd(cmd):
 		report_failure ("Failed running: %s (returncode=%s)" % (cmd, res), 2)
 	return res
 
-def eval_cmd_output(cmd, ignore_error=False):
+def eval_cmd_output(cmd, ignore_error=False, display_as_it_execute=False):
 	#  print cmd
 	p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	if p:
-		o = p.communicate()[0]
+		if display_as_it_execute:
+			stdout = []
+			while True:
+				line = p.stdout.readline()
+				stdout.append(line)
+				print "%s" % (line),
+				if line == '' and p.poll() != None:
+					break
+			o = ''.join(stdout)
+		else:
+			o = p.communicate()[0]
+
 		return [p.returncode, o]
 	else:
 		if not ignore_error:
@@ -57,6 +68,12 @@ def eval_cmd_output(cmd, ignore_error=False):
 def rm_dir(d):
 	if os.path.isdir(d):
 		shutil.rmtree(d)
+
+def ecb_command():
+	return os.path.join (os.environ['ISE_EIFFEL'],"studio", "spec", os.environ['ISE_PLATFORM'], "bin", "ecb")
+
+def compile_all_command():
+	return os.path.join (os.environ['ISE_EIFFEL'],"tools", "spec", os.environ['ISE_PLATFORM'], "bin", "compile_all")
 
 def runTestForProject(where):
 	if not os.path.isdir(where):
@@ -84,27 +101,26 @@ def runTestForProject(where):
 		rm_dir("EIFGENs")
 
 	# compile the restbucks
-	print "# Compiling restbucks example"
-	cmd = "ecb -config %s -target restbucks -batch -c_compile -project_path . " % (os.path.join ("examples", "restbucksCRUD", "restbucks-safe.ecf"))
-	res = eval_cmd(cmd)
-
-	sleep(1)
+	#print "# Compiling restbucks example"
+	#cmd = "%s -config %s -target restbucks -batch -c_compile -project_path . " % (ecb_command(), os.path.join ("examples", "restbucksCRUD", "restbucks-safe.ecf"))
+	#res = eval_cmd(cmd)
+	#sleep(1)
 		
 
 	print "# check compile_all tests"
 	if not os.path.exists(os.path.join ("tests", "temp")):
 		os.makedirs (os.path.join ("tests", "temp"))
 
-	(res, res_output) = eval_cmd_output("compile_all -version", True)
+	(res, res_output) = eval_cmd_output("%s -version" %(compile_all_command()), True)
 	print res_output
 
-	cmd = "compile_all -ecb -melt -eifgen %s -ignore %s " % (os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini"))
+	cmd = "%s -ecb -melt -eifgen %s -ignore %s " % (compile_all_command(), os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini"))
 	if keep_all:
 		cmd = "%s -keep passed" % (cmd) # forget about failed one .. we'll try again next time
 	if clobber:
 		cmd = "%s -clean" % (cmd)
 	print "command: %s" % (cmd)
-	(res, res_output) = eval_cmd_output(cmd)
+	(res, res_output) = eval_cmd_output(cmd, False, True)
 	if res != 0:
 		report_failure("compile_all failed", 2)
 
