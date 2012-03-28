@@ -94,7 +94,7 @@ def runTestForProject(where):
 	print res_output
 
 
-	cmd = "%s -ecb -melt -eifgen %s -ignore %s " % (compile_all_command() os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini -log_verbose -list_failures"))
+	cmd = "%s -ecb -melt -eifgen %s -ignore %s " % (compile_all_command(), os.path.join ("tests", "temp"), os.path.join ("tests", "compile_all.ini -log_verbose -list_failures"))
 	if keep_all:
 		cmd = "%s -keep passed" % (cmd) # forget about failed one .. we'll try again next time
 	if clobber:
