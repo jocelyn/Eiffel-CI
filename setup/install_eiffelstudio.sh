@@ -49,7 +49,7 @@ do_install() {
 	echo >&2 "Executing eiffelstudio install script ... ($CHANNEL)"
 
 	architecture=$(uname -m)
-	if [ -z "$ISE_PLATFORM"]; then
+	if [ -z "$ISE_PLATFORM" ]; then
 		case $architecture in
 			# officially supported
 			amd64|x86_64)
@@ -149,6 +149,7 @@ do_install() {
 			You may press Ctrl+C now to abort this script.
 		EOF
 		( set -x; sleep 20 )
+		\rm -rf "$ISE_EIFFEL"
 	fi
 
 	echo >&2 Get $ISE_DOWNLOAD_URL
@@ -158,7 +159,7 @@ do_install() {
 	fi
 	$curl $ISE_DOWNLOAD_URL | tar -x -p -s --bzip2
 
-	ISE_RC_FILE=setup_eiffel_${ISE_MAJOR_MINOR}_${ISE_BUILD}.rc
+	ISE_RC_FILE=eiffel_${ISE_MAJOR_MINOR}_${ISE_BUILD}.rc
 	echo \# Setup for EiffelStudio ${ISE_MAJOR_MINOR}.${ISE_BUILD} > $ISE_RC_FILE
 	echo export ISE_PLATFORM=$ISE_PLATFORM >> $ISE_RC_FILE
 	echo export ISE_EIFFEL=$ISE_EIFFEL >> $ISE_RC_FILE
@@ -167,9 +168,10 @@ do_install() {
 	cat $ISE_RC_FILE
 
 	if command_exists ecb; then
-		echo >&2 EiffelStudio installed ...
-		PATH=$PATH:$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin:$ISE_EIFFEL/tools/spec/$ISE_PLATFORM/bin
-		$(ecb -version) >&2
+		echo >&2 EiffelStudio installed in $ISE_EIFFEL
+		$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin/ecb -version  >&2
+		echo >&2 Use the file $ISE_RC_FILE to setup your Eiffel environment.
+		echo >&2 Happy Eiffeling!
 	else
 		echo >&2 ERROR: Installation failed !!!
 		echo >&2 Check inside ${ISE_EIFFEL}
