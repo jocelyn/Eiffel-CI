@@ -1,6 +1,11 @@
 #!/bin/sh
 
-set -e
+#set -e
+
+#Default values
+ISE_MAJOR_MINOR=17.05
+ISE_BUILD=100416
+
 
 # This script is meant for quick & easy install via:
 #   $ curl -fsSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.sh -o get-eiffelstudio.sh
@@ -29,10 +34,6 @@ if [ -z "$CHANNEL" ]; then
     CHANNEL=$DEFAULT_CHANNEL_VALUE
 fi
 
-#Default values
-ISE_MAJOR_MINOR=17.05
-ISE_BUILD=100416
-
 iseverParse() {
 	major="${1%%.*}"
 	minor="${1#$major.}"
@@ -45,25 +46,31 @@ command_exists() {
 }
 
 do_install() {
-	echo >&2 "Executing eiffelstudio install script ..."
-	echo >&2 CHANNEL=$CHANNEL
+	echo >&2 "Executing eiffelstudio install script ... ($CHANNEL)"
 
 	architecture=$(uname -m)
-	case $architecture in
-		# officially supported
-		amd64|x86_64)
-			ISE_PLATFORM=linux-x86-64
-			;;
-		# unofficially supported with available repositories
-		armv6l|armv6)
-			ISE_PLATFORM=linux-armv6
-			;;
-		# not supported armv7 ...
-		*)
-			echo >&2 Error: $architecture is not a recognized platform.
-			exit 1
-			;;
-	esac
+	if [ -z "$ISE_PLATFORM"]; then
+		case $architecture in
+			# officially supported
+			amd64|x86_64)
+				ISE_PLATFORM=linux-x86-64
+				;;
+			i386|i686)
+				ISE_PLATFORM=linux-x86
+				;;
+			# unofficially supported with available repositories
+			armv6l|armv6)
+				ISE_PLATFORM=linux-armv6
+				;;
+			# not supported armv7 ...
+			*)
+				echo >&2 Error: $architecture is not a recognized platform.
+				exit 1
+				;;
+		esac
+	else
+		echo >&2 Using existing ISE_PLATFORM=$ISE_PLATFORM on architecture '$architecture'
+	fi
 
 	case $CHANNEL in
 		latest)
@@ -76,6 +83,9 @@ do_install() {
 		night)
 			echo >&2 Use nighlty release.
 			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/beta/nightly/Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
+
+			echo >&2 not supported for now!
+			exit 1
 			;;
 		*)
 			echo >&2 Use custom release $CHANNEL if any
@@ -146,20 +156,19 @@ do_install() {
 		echo >&2 No download url !!!
 		exit 1
 	fi
-	$curl $ISE_DOWNLOAD_URL | tar -x --bzip2
+	$curl $ISE_DOWNLOAD_URL | tar -x -p -s --bzip2
 
 	ISE_RC_FILE=setup_eiffel_${ISE_MAJOR_MINOR}_${ISE_BUILD}.rc
 	echo \# Setup for EiffelStudio ${ISE_MAJOR_MINOR}.${ISE_BUILD} > $ISE_RC_FILE
 	echo export ISE_PLATFORM=$ISE_PLATFORM >> $ISE_RC_FILE
 	echo export ISE_EIFFEL=$ISE_EIFFEL >> $ISE_RC_FILE
-	#PATH=$PATH:$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin:$PATH:$ISE_EIFFEL/tools/spec/$ISE_PLATFORM/bin
-	echo export PATH=\$PATH:\$ISE_EIFFEL/studio/spec/\$ISE_PLATFORM/bin:\$PATH:\$ISE_EIFFEL/tools/spec/\$ISE_PLATFORM/bin >> $ISE_RC_FILE
+	echo export PATH=\$PATH:\$ISE_EIFFEL/studio/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/tools/spec/\$ISE_PLATFORM/bin >> $ISE_RC_FILE
 
 	cat $ISE_RC_FILE
 
 	if command_exists ecb; then
 		echo >&2 EiffelStudio installed ...
-		source $ISE_RC_FILE
+		PATH=$PATH:$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin:$ISE_EIFFEL/tools/spec/$ISE_PLATFORM/bin
 		$(ecb -version) >&2
 	else
 		echo >&2 ERROR: Installation failed !!!
