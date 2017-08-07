@@ -60,9 +60,7 @@ do_install() {
 			;;
 		# not supported armv7 ...
 		*)
-			cat >&2 <<-EOF
-			Error: $architecture is not a recognized platform.
-			EOF
+			echo >&2 Error: $architecture is not a recognized platform.
 			exit 1
 			;;
 	esac
@@ -137,23 +135,18 @@ do_install() {
 			If you installed the current EiffelStudio package using this script and are using it
 		EOF
 		cat >&2 <<-'EOF'
-		cat >&2 <<-'EOF'
 
 			You may press Ctrl+C now to abort this script.
 		EOF
 		( set -x; sleep 20 )
 	fi
 
-	cat >&2 <<-'EOF'
-		Get $ISE_DOWNLOAD_URL
-	EOF
+	echo >&2 Get $ISE_DOWNLOAD_URL
 	if [ -z "$ISE_DOWNLOAD_URL" ]; then
-		cat >&2 <<-'EOF'
-			No download url !!!
-		EOF
+		echo >&2 No download url !!!
 		exit 1
 	fi
-	curl $ISE_DOWNLOAD_URL | tar -x --bzip2
+	$curl $ISE_DOWNLOAD_URL | tar -x --bzip2
 
 	ISE_RC_FILE=setup_eiffel_${ISE_MAJOR_MINOR}_${ISE_BUILD}.rc
 	echo \# Setup for EiffelStudio ${ISE_MAJOR_MINOR}.${ISE_BUILD} > $ISE_RC_FILE
@@ -165,16 +158,12 @@ do_install() {
 	cat $ISE_RC_FILE
 
 	if command_exists ecb; then
-		cat >&2 <<-'EOF'
-			EiffelStudio installed ...
-		EOF
+		echo >&2 EiffelStudio installed ...
 		source $ISE_RC_FILE
 		$(ecb -version) >&2
 	else
-		cat >&2 <<-'EOF'
-			ERROR: Installation failed !!!
-			Check inside ${ISE_EIFFEL}
-		EOF
+		echo >&2 ERROR: Installation failed !!!
+		echo >&2 Check inside ${ISE_EIFFEL}
 	fi
 	cd $T_CURRENT_DIR
 }
