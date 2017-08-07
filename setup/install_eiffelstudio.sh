@@ -7,7 +7,7 @@ set -e
 #   $ sh get-eiffelstudio.sh
 #
 # or
-#   $ curl -sSL get.docker.com | sh
+#   $ curl -sSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.sh | sh
 
 #
 # NOTE: Make sure to verify the contents of the script
