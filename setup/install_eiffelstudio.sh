@@ -69,7 +69,7 @@ do_install() {
 				;;
 		esac
 	else
-		echo >&2 Using existing ISE_PLATFORM=$ISE_PLATFORM on architecture '$architecture'
+		echo >&2 Using existing ISE_PLATFORM=$ISE_PLATFORM on architecture $architecture
 	fi
 
 	case $CHANNEL in
