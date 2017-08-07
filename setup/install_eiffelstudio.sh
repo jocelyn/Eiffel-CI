@@ -115,7 +115,7 @@ do_install() {
 
 	curl=''
 	if command_exists curl; then
-		curl='curl -sSL'
+		curl='curl -sSL -H \'Cache-Control: no-cache\' '
 	elif command_exists wget; then
 		curl='wget -qO-'
 	elif command_exists busybox && busybox --list-modules | grep -q wget; then
@@ -158,6 +158,7 @@ do_install() {
 	echo \# Setup for EiffelStudio ${ISE_MAJOR_MINOR}.${ISE_BUILD} > $ISE_RC_FILE
 	echo export ISE_PLATFORM=$ISE_PLATFORM >> $ISE_RC_FILE
 	echo export ISE_EIFFEL=$ISE_EIFFEL >> $ISE_RC_FILE
+	#PATH=$PATH:$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin:$PATH:$ISE_EIFFEL/tools/spec/$ISE_PLATFORM/bin
 	echo export PATH=\$PATH:\$ISE_EIFFEL/studio/spec/\$ISE_PLATFORM/bin:\$PATH:\$ISE_EIFFEL/tools/spec/\$ISE_PLATFORM/bin >> $ISE_RC_FILE
 
 	cat $ISE_RC_FILE
@@ -166,6 +167,7 @@ do_install() {
 		cat >&2 <<-'EOF'
 			EiffelStudio installed ...
 		EOF
+		source $ISE_RC_FILE
 		$(ecb -version) >&2
 	else
 		cat >&2 <<-'EOF'
