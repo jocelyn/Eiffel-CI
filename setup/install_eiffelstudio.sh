@@ -115,7 +115,8 @@ do_install() {
 
 	curl=''
 	if command_exists curl; then
-		curl='curl -sSL -H \'Cache-Control: no-cache\' '
+		curl='curl -sSL'
+		#curl="$curl -H 'Cache-Control: no-cache'"
 	elif command_exists wget; then
 		curl='wget -qO-'
 	elif command_exists busybox && busybox --list-modules | grep -q wget; then
@@ -152,7 +153,7 @@ do_install() {
 		EOF
 		exit 1
 	fi
-	curl -vSL $ISE_DOWNLOAD_URL | tar -x --bzip2
+	curl $ISE_DOWNLOAD_URL | tar -x --bzip2
 
 	ISE_RC_FILE=setup_eiffel_${ISE_MAJOR_MINOR}_${ISE_BUILD}.rc
 	echo \# Setup for EiffelStudio ${ISE_MAJOR_MINOR}.${ISE_BUILD} > $ISE_RC_FILE
