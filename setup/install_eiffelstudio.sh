@@ -15,6 +15,7 @@ set -e
 #       located at https://github.com/.../... FIXME !!!
 #       before executing.
 #
+# (Inspired by get.docker.com)
 
 T_CURRENT_DIR=$(pwd)
 
@@ -151,7 +152,7 @@ do_install() {
 		EOF
 		exit 1
 	fi
-	#curl -vSL $ISE_DOWNLOAD_URL | tar -x --bzip2
+	curl -vSL $ISE_DOWNLOAD_URL | tar -x --bzip2
 
 	ISE_RC_FILE=setup_eiffel_${ISE_MAJOR_MINOR}_${ISE_BUILD}.rc
 	echo \# Setup for EiffelStudio ${ISE_MAJOR_MINOR}.${ISE_BUILD} > $ISE_RC_FILE
