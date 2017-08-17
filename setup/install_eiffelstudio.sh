@@ -32,9 +32,9 @@ T_CURRENT_DIR=$(pwd)
 #	* specific release, using major.minor.build (such as 17.05.100416)
 #   * night
 
-DEFAULT_CHANNEL_VALUE="latest"
-if [ -z "$CHANNEL" ]; then
-    CHANNEL=$DEFAULT_CHANNEL_VALUE
+DEFAULT_ISE_CHANNEL_VALUE="latest"
+if [ -z "$ISE_CHANNEL" ]; then
+    ISE_CHANNEL=$DEFAULT_ISE_CHANNEL_VALUE
 fi
 
 iseverParse() {
@@ -49,7 +49,7 @@ command_exists() {
 }
 
 do_install() {
-	echo >&2 "Executing eiffelstudio install script ... ($CHANNEL)"
+	echo >&2 "Executing eiffelstudio install script ... ($ISE_CHANNEL)"
 
 	architecture=$(uname -m)
 	if [ -z "$ISE_PLATFORM" ]; then
@@ -75,7 +75,7 @@ do_install() {
 		echo >&2 Using existing ISE_PLATFORM=$ISE_PLATFORM on architecture $architecture
 	fi
 
-	case $CHANNEL in
+	case $ISE_CHANNEL in
 		latest)
 			#Use defaults .. see above.
 			echo >&2 Use latest release.
@@ -93,8 +93,8 @@ do_install() {
 			echo >&2 Version=$major.$minor.$build
 			;;
 		*)
-			echo >&2 Use custom release $CHANNEL if any
-			iseverParse $CHANNEL
+			echo >&2 Use custom release $ISE_CHANNEL if any
+			iseverParse $ISE_CHANNEL
 			echo >&2 $major.$minor.$build
 			ISE_MAJOR_MINOR=$major.$minor
 			ISE_BUILD=$build
