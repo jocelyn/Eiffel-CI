@@ -6,6 +6,9 @@
 ISE_MAJOR_MINOR=17.05
 ISE_BUILD=100416
 
+ISE_MAJOR_MINOR_NIGHTLY=17.11
+ISE_BUILD_NIGHTLY=100608
+
 
 # This script is meant for quick & easy install via:
 #   $ curl -fsSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.sh -o get-eiffelstudio.sh
@@ -76,16 +79,18 @@ do_install() {
 		latest)
 			#Use defaults .. see above.
 			echo >&2 Use latest release.
+			ISE_DOWNLOAD_URL=http://downloads.sourceforge.net/eiffelstudio/Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
 			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
 			echo >&2 Version=$major.$minor.$build
-			ISE_DOWNLOAD_URL=http://downloads.sourceforge.net/eiffelstudio/Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
 			;;
 		night)
 			echo >&2 Use nighlty release.
-			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/beta/nightly/Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
+			ISE_MAJOR_MINOR=ISE_MAJOR_MINOR_NIGHTLY
+			ISE_BUILD=ISE_BUILD_NIGHTLY
 
-			echo >&2 not supported for now!
-			exit 1
+			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/beta/nightly/Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
+			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
+			echo >&2 Version=$major.$minor.$build
 			;;
 		*)
 			echo >&2 Use custom release $CHANNEL if any
