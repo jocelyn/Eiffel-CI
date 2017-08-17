@@ -30,7 +30,7 @@ T_CURRENT_DIR=$(pwd)
 # This value will automatically get changed for:
 #   * latest
 #	* specific release, using major.minor.build (such as 17.05.100416)
-#   * night
+#   * nightly
 
 DEFAULT_ISE_CHANNEL_VALUE="latest"
 if [ -z "$ISE_CHANNEL" ]; then
@@ -83,7 +83,7 @@ do_install() {
 			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
 			echo >&2 Version=$major.$minor.$build
 			;;
-		night)
+		nightly)
 			echo >&2 Use nighlty release.
 			ISE_MAJOR_MINOR=ISE_MAJOR_MINOR_NIGHTLY
 			ISE_BUILD=ISE_BUILD_NIGHTLY
