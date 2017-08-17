@@ -85,8 +85,8 @@ do_install() {
 			;;
 		nightly)
 			echo >&2 Use nighlty release.
-			ISE_MAJOR_MINOR=ISE_MAJOR_MINOR_NIGHTLY
-			ISE_BUILD=ISE_BUILD_NIGHTLY
+			ISE_MAJOR_MINOR=$ISE_MAJOR_MINOR_NIGHTLY
+			ISE_BUILD=$ISE_BUILD_NIGHTLY
 
 			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/beta/nightly/Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
 			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
