@@ -7,8 +7,9 @@ ISE_MAJOR_MINOR=17.05
 ISE_BUILD=100416
 
 ISE_MAJOR_MINOR_NIGHTLY=17.11
-ISE_BUILD_NIGHTLY=100608
+ISE_BUILD_NIGHTLY=100740
 
+TMP_SAFETY_DELAY=10
 
 # This script is meant for quick & easy install via:
 #   $ curl -fsSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.sh -o get-eiffelstudio.sh
@@ -75,11 +76,12 @@ do_install() {
 		echo >&2 Using existing ISE_PLATFORM=$ISE_PLATFORM on architecture $architecture
 	fi
 
+	ISE_DOWNLOAD_FILE=Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
 	case $ISE_CHANNEL in
 		latest)
 			#Use defaults .. see above.
 			echo >&2 Use latest release.
-			ISE_DOWNLOAD_URL=http://downloads.sourceforge.net/eiffelstudio/Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
+			ISE_DOWNLOAD_URL=http://downloads.sourceforge.net/eiffelstudio/$ISE_DOWNLOAD_FILE
 			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
 			echo >&2 Version=$major.$minor.$build
 			;;
@@ -88,7 +90,7 @@ do_install() {
 			ISE_MAJOR_MINOR=$ISE_MAJOR_MINOR_NIGHTLY
 			ISE_BUILD=$ISE_BUILD_NIGHTLY
 
-			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/beta/nightly/Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
+			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/beta/nightly/$ISE_DOWNLOAD_FILE
 			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
 			echo >&2 Version=$major.$minor.$build
 			;;
@@ -98,7 +100,7 @@ do_install() {
 			echo >&2 $major.$minor.$build
 			ISE_MAJOR_MINOR=$major.$minor
 			ISE_BUILD=$build
-			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/download/$ISE_MAJOR_MINOR/Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
+			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/download/$ISE_MAJOR_MINOR/$ISE_DOWNLOAD_FILE
 			;;
 	esac
 
@@ -121,7 +123,7 @@ do_install() {
 
 			You may press Ctrl+C now to abort this script.
 		EOF
-		( set -x; sleep 20 )
+		( set -x; sleep $TMP_SAFETY_DELAY )
 	fi
 		
 	user="$(id -un 2>/dev/null || true)"
@@ -153,7 +155,7 @@ do_install() {
 
 			You may press Ctrl+C now to abort this script.
 		EOF
-		( set -x; sleep 20 )
+		( set -x; sleep $TMP_SAFETY_DELAY )
 		\rm -rf "$ISE_EIFFEL"
 	fi
 
@@ -163,14 +165,26 @@ do_install() {
 		exit 1
 	fi
 	$curl $ISE_DOWNLOAD_URL | tar -x -p -s --bzip2
+        #if [ -f "$ISE_DOWNLOAD_FILE" ]; then
+	#	echo >&2 Already there.
+        #else
+	#	$curl -o $ISE_DOWNLOAD_FILE $ISE_DOWNLOAD_URL
+        #fi
+	#echo Extracting ...
+	#tar -xv --bzip2 -f $ISE_DOWNLOAD_FILE
 
-	ISE_RC_FILE=eiffel_${ISE_MAJOR_MINOR}_${ISE_BUILD}.rc
+	ISE_RC_FILE="./eiffel_${ISE_MAJOR_MINOR}_${ISE_BUILD}.rc"
 	echo \# Setup for EiffelStudio ${ISE_MAJOR_MINOR}.${ISE_BUILD} > $ISE_RC_FILE
 	echo export ISE_PLATFORM=$ISE_PLATFORM >> $ISE_RC_FILE
 	echo export ISE_EIFFEL=$ISE_EIFFEL >> $ISE_RC_FILE
 	echo export PATH=\$PATH:\$ISE_EIFFEL/studio/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/tools/spec/\$ISE_PLATFORM/bin >> $ISE_RC_FILE
-
 	cat $ISE_RC_FILE
+
+	#export ISE_PLATFORM=$ISE_PLATFORM
+	#export ISE_EIFFEL=$ISE_EIFFEL 
+	#export PATH=$PATH:$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin:$ISE_EIFFEL/tools/spec/$ISE_PLATFORM/bin
+
+	. $ISE_RC_FILE
 
 	if command_exists ecb; then
 		echo >&2 EiffelStudio installed in $ISE_EIFFEL
