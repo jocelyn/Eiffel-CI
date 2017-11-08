@@ -1,6 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 
 #set -e
+
+while true; do
+	ISE_CHANNEL=$1
+	shift || break
+	ISE_PLATFORM=$1
+	shift || break
+	break
+done
 
 #Default values
 ISE_MAJOR_MINOR=17.05
@@ -76,11 +84,11 @@ do_install() {
 		echo >&2 Using existing ISE_PLATFORM=$ISE_PLATFORM on architecture $architecture
 	fi
 
-	ISE_DOWNLOAD_FILE=Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
 	case $ISE_CHANNEL in
 		latest)
 			#Use defaults .. see above.
 			echo >&2 Use latest release.
+			ISE_DOWNLOAD_FILE=Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
 			ISE_DOWNLOAD_URL=http://downloads.sourceforge.net/eiffelstudio/$ISE_DOWNLOAD_FILE
 			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
 			echo >&2 Version=$major.$minor.$build
@@ -90,6 +98,7 @@ do_install() {
 			ISE_MAJOR_MINOR=$ISE_MAJOR_MINOR_NIGHTLY
 			ISE_BUILD=$ISE_BUILD_NIGHTLY
 
+			ISE_DOWNLOAD_FILE=Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
 			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/beta/nightly/$ISE_DOWNLOAD_FILE
 			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
 			echo >&2 Version=$major.$minor.$build
@@ -100,6 +109,7 @@ do_install() {
 			echo >&2 $major.$minor.$build
 			ISE_MAJOR_MINOR=$major.$minor
 			ISE_BUILD=$build
+			ISE_DOWNLOAD_FILE=Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
 			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/download/$ISE_MAJOR_MINOR/$ISE_DOWNLOAD_FILE
 			;;
 	esac
@@ -189,7 +199,11 @@ do_install() {
 	if command_exists ecb; then
 		echo >&2 EiffelStudio installed in $ISE_EIFFEL
 		$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin/ecb -version  >&2
-		echo >&2 Use the file $ISE_RC_FILE to setup your Eiffel environment.
+		echo >&2 Use the file `pwd`/$ISE_RC_FILE to setup your Eiffel environment.
+		if [ $ISE_CHANNEL = "latest" ]; then
+			ln -s $ISE_RC_FILE eiffel_latest.rc > /dev/null
+			echo >&2 or the file `pwd`/eiffel_latest.rc.
+		fi
 		echo >&2 Happy Eiffeling!
 	else
 		echo >&2 ERROR: Installation failed !!!
@@ -202,3 +216,4 @@ do_install() {
 # half the file during "curl | sh"
 
 do_install
+

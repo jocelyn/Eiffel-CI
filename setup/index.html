@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>EiffelStudio installation script</title>
+</head>
+<body>
+<h1>install.sh</h1>
+<p>To easily install latest EiffelStudio on linux system:</p>
+<code>
+curl -sSL https://www.eiffel.org/setup/install.sh | bash
+</code>
+<p><strong>note:</strong> you can customize the execution with the follow environment variables:
+<blockquote>
+<ul>
+<li>ISE_CHANNEL: latest (default), nightly,  custom <code>major.minor.build</code> (i.e 17.05.100416 if it exists)
+</li>
+<li>ISE_PLATFORM: if not set, the script tries to find expected value</li>
+</ul>
+And also by passing arguments to the script using <code> .. | bash -s channel platform</code>.
+For instance:
+<ul>
+<li><code>curl -sSL ... | bash -s nightly </code></li>
+<li><code>curl -sSL ... | bash -s latest linux-x86-64 </code></li>
+</ul>
+</blockquote>
+</p>
+</body
+</html>
