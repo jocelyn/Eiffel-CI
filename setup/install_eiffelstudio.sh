@@ -212,9 +212,6 @@ do_install() {
 			*)
 				;;
 		esac
-		
-		if [ $ISE_CHANNEL = "latest" ]; then
-		fi
 		echo >&2 Happy Eiffeling!
 	else
 		echo >&2 ERROR: Installation failed !!!
