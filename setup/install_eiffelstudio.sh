@@ -200,9 +200,20 @@ do_install() {
 		echo >&2 EiffelStudio installed in $ISE_EIFFEL
 		$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin/ecb -version  >&2
 		echo >&2 Use the file `pwd`/$ISE_RC_FILE to setup your Eiffel environment.
+		case $ISE_CHANNEL in
+			latest)
+				ln -s $ISE_RC_FILE eiffel_latest.rc > /dev/null
+				echo >&2 or the file `pwd`/eiffel_latest.rc
+				;;
+			nightly)
+				ln -s $ISE_RC_FILE eiffel_nightly.rc > /dev/null
+				echo >&2 or the file `pwd`/eiffel_nightly.rc
+				;;
+			*)
+				;;
+		esac
+		
 		if [ $ISE_CHANNEL = "latest" ]; then
-			ln -s $ISE_RC_FILE eiffel_latest.rc > /dev/null
-			echo >&2 or the file `pwd`/eiffel_latest.rc.
 		fi
 		echo >&2 Happy Eiffeling!
 	else
