@@ -127,9 +127,10 @@ goto POST_CHANNEL
 		echo >&2 If you installed the current EiffelStudio package using this script and are using it
 		echo >&2 again to update EiffelStudio, you can safely ignore this message.
 		echo >&2 You may press Ctrl+C now to abort this script.
-		sleep %TMP_SAFETY_DELAY%
-		goto CHECK_TOOLS
 
+		choice /T %TMP_SAFETY_DELAY% /C cyn /N /D y /M "Press [C] to cancel, Press [Y] to continue now, or wait %TMP_SAFETY_DELAY% seconds ..."
+		if %ERRORLEVEL% NEQ 2 goto ABORT
+		goto CHECK_TOOLS
 
 :CHECK_TOOLS
 
@@ -137,10 +138,10 @@ goto POST_CHANNEL
 :CHECK_7z
 	call:CHECK_COMMAND 7z.exe S7Z_PATH
 	if "%S7Z_PATH%" NEQ "" (
-		set extract_cmd=%S7Z_PATH% x
+		set extract_cmd="%S7Z_PATH%" x
 		goto CHECK_DOWNLOAD
 	) else (
-		echo >&2 Can not find a 7z extract utility (7z.exe, ...)
+		echo >&2 Can not find a 7z extract utility: 7z.exe, ...
 		goto FAILURE
 	)
 
@@ -148,7 +149,7 @@ goto POST_CHANNEL
 	call:CHECK_COMMAND curl.exe CURL_PATH
 	if NOT "%CURL_PATH%" == "" (
 		echo >&2 Use %CURL_PATH%
-		set download_cmd=%CURL_PATH% -sSL 
+		set download_cmd="%CURL_PATH%" -fsSL 
 		:: -H 'Cache-Control: no-cache'
 		goto GET_DOWNLOAD
 	) else (
@@ -157,10 +158,10 @@ goto POST_CHANNEL
 :CHECK_WGET
 	call:CHECK_COMMAND wget.exe WGET_PATH
 	if NOT "%WGET_PATH%" == "" (
-		set download_cmd=%WGET_PATH% -qO-
+		set download_cmd="%WGET_PATH%" -qO-
 		goto GET_DOWNLOAD
 	) else (
-		echo >&2 Can not find a download utility (curl, wget, ...)
+		echo >&2 Can not find a download utility: curl, wget, ...
 		goto FAILURE
 	)
 
@@ -174,7 +175,8 @@ goto POST_CHANNEL
 		echo >&2 why we are displaying this warning and provide the opportunity to cancel the installation.
 		echo >&2 If you installed the current EiffelStudio package using this script and are using it
 		echo >&2 You may press Ctrl+C now to abort this script.
-		sleep %TMP_SAFETY_DELAY% 
+		choice /T %TMP_SAFETY_DELAY% /C cyn /N /D y /M "Press [C] to cancel, Press [Y] to continue now, or wait %TMP_SAFETY_DELAY% seconds ..."
+		if %ERRORLEVEL% NEQ 2 goto ABORT
 		rd /q/s "%ISE_EIFFEL%"
 	)
 
@@ -233,6 +235,11 @@ goto POST_CHANNEL
 
 :FAILURE
 echo Failed!
+goto END
+
+:ABORT
+echo Aborted!
+goto END
 
 :END
 endlocal
