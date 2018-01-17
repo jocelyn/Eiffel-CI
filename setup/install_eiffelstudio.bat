@@ -56,7 +56,6 @@ goto DO_INSTALL
 			set build=%%b
 		)
 	)
-	echo >&2 Version=major=%major%.minor=%minor%.build=%build%
 goto:eof
 
 :DO_INSTALL
@@ -134,13 +133,13 @@ goto POST_CHANNEL
 
 :CHECK_TOOLS
 
+
 :CHECK_7z
 	call:CHECK_COMMAND 7z.exe S7Z_PATH
-	if NOT "%S7Z_PATH%" == "" (
+	if "%S7Z_PATH%" NEQ "" (
 		set extract_cmd=%S7Z_PATH% x
 		goto CHECK_DOWNLOAD
-	)
-	else (
+	) else (
 		echo >&2 Can not find a 7z extract utility (7z.exe, ...)
 		goto FAILURE
 	)
@@ -152,8 +151,7 @@ goto POST_CHANNEL
 		set download_cmd=%CURL_PATH% -sSL 
 		:: -H 'Cache-Control: no-cache'
 		goto GET_DOWNLOAD
-	)
-	else (
+	) else (
 		call:CHECK_WGET
 	)
 :CHECK_WGET
@@ -161,8 +159,7 @@ goto POST_CHANNEL
 	if NOT "%WGET_PATH%" == "" (
 		set download_cmd=%WGET_PATH% -qO-
 		goto GET_DOWNLOAD
-	)
-	else (
+	) else (
 		echo >&2 Can not find a download utility (curl, wget, ...)
 		goto FAILURE
 	)
