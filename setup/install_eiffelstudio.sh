@@ -1,7 +1,13 @@
 #!/bin/bash
 
-#set -e
+# Default values
+ISE_MAJOR_MINOR=17.05
+ISE_BUILD=100416
 
+ISE_MAJOR_MINOR_NIGHTLY=17.11
+ISE_BUILD_NIGHTLY=101197
+
+# Arguments
 while true; do
 	ISE_CHANNEL=$1
 	shift || break
@@ -10,12 +16,6 @@ while true; do
 	break
 done
 
-#Default values
-ISE_MAJOR_MINOR=17.05
-ISE_BUILD=100416
-
-ISE_MAJOR_MINOR_NIGHTLY=17.11
-ISE_BUILD_NIGHTLY=101197
 
 TMP_SAFETY_DELAY=10
 
@@ -25,12 +25,6 @@ TMP_SAFETY_DELAY=10
 #
 # or
 #   $ curl -sSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.sh | sh
-
-#
-# NOTE: Make sure to verify the contents of the script
-#       you downloaded matches the contents of install_eiffelstudio.sh
-#       located at https://github.com/.../... FIXME !!!
-#       before executing.
 #
 # (Inspired by get.docker.com)
 

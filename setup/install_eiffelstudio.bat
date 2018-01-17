@@ -1,24 +1,6 @@
 @echo off
-set PATH=%PATH%;C:\apps\utility\7-Zip
-
-REM This script is meant for quick & easy install via:
-REM   $ curl -fsSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.bat -o get-eiffelstudio.bat
-REM   $ get-eiffelstudio.bat
-REM
-REM or
-REM   $ curl -sSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.bat -o %TEMP%\get-es.bat && cmd /c %TEMP%\get-es.bat && del %TEMP%\get-es.bat
-REM
-REM
-REM NOTE: Make sure to verify the contents of the script
-REM       you downloaded matches the contents of install_eiffelstudio.sh
-REM       located at https://github.com/.../... FIXME !!!
-REM       before executing.
-REM
-REM (Inspired by get.docker.com)
-
 setlocal
 
-:SET_DEFAULTS
 :: Default values
 set ISE_MAJOR_MINOR=17.05
 set ISE_BUILD=100416
@@ -26,6 +8,17 @@ set ISE_BUILD=100416
 set ISE_MAJOR_MINOR_NIGHTLY=17.11
 set ISE_BUILD_NIGHTLY=101197
 
+REM Overview:
+REM
+REM This script is meant for quick & easy install via:
+REM   $ curl -fsSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.bat -o get-es.bat
+REM   $ get-es.bat
+REM
+REM or
+REM   $ curl -sSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.bat -o %TEMP%\get-es.bat && cmd /c %TEMP%\get-es.bat && del %TEMP%\get-es.bat
+
+
+:SET_DEFAULTS
 set TMP_SAFETY_DELAY=10
 set DEFAULT_ISE_CHANNEL_VALUE=latest
 goto GET_ARGUMENTS
