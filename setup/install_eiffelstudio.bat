@@ -6,7 +6,7 @@ REM   $ curl -fsSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install
 REM   $ get-eiffelstudio.bat
 REM
 REM or
-REM   $ curl -sSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.sh | sh
+REM   $ curl -sSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.bat -o %TEMP%\get-es.bat && cmd /c %TEMP%\get-es.bat && del %TEMP%\get-es.bat
 REM
 REM
 REM NOTE: Make sure to verify the contents of the script
@@ -24,7 +24,7 @@ set ISE_MAJOR_MINOR=17.05
 set ISE_BUILD=100416
 
 set ISE_MAJOR_MINOR_NIGHTLY=17.11
-set ISE_BUILD_NIGHTLY=100740
+set ISE_BUILD_NIGHTLY=101197
 
 set TMP_SAFETY_DELAY=10
 set DEFAULT_ISE_CHANNEL_VALUE=latest
