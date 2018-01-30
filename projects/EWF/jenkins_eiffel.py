@@ -31,21 +31,21 @@ def set_last_run_CI_tests_failed(m):
 	f.close()
 
 def report_failure(msg, a_code=2):
-	print msg
+	print (msg)
 	set_last_run_CI_tests_failed(msg)
 	sys.exit(a_code)
 
 # Override system command.
 # run command. if not successful, complain and exit with error
 def eval_cmd(cmd):
-	#  print cmd
+	#  print (cmd)
 	res = subprocess.call (cmd, shell=True)
 	if res != 0:
 		report_failure ("Failed running: %s (returncode=%s)" % (cmd, res), 2)
 	return res
 
 def eval_cmd_output(cmd, ignore_error=False, display_as_it_execute=False):
-	#  print cmd
+	#  print (cmd)
 	p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	if p:
 		if display_as_it_execute:
@@ -53,7 +53,7 @@ def eval_cmd_output(cmd, ignore_error=False, display_as_it_execute=False):
 			while True:
 				line = p.stdout.readline()
 				stdout.append(line)
-				print "%s" % (line),
+				print ("%s" % (line),)
 				if line == '' and p.poll() != None:
 					break
 			o = ''.join(stdout)
@@ -92,16 +92,16 @@ def runTestForProject(where, args):
 #	clobber = (len(sys.argv) >= 2 and sys.argv[1] == "-clobber") or (last_build_had_failure())
 	reset_last_run_CI_tests_failed()
 	if clobber:
-		print "## Cleaning previous tests"
+		print ("## Cleaning previous tests")
 		rm_dir("EIFGENs")
 
 	# compile the restbucks
-	#print "# Compiling restbucks example"
+	#print ("# Compiling restbucks example")
 	#cmd = "%s -config %s -target restbucks -batch -c_compile -project_path . " % (ecb_command(), os.path.join ("examples", "restbucksCRUD", "restbucks-safe.ecf"))
 	#res = eval_cmd(cmd)
 	#sleep(1)
 		
-	print "# check compile_all tests"
+	print ("# check compile_all tests")
 	compdir = os.path.join("comp")
 	logsdir = os.path.join("logs")
 	
@@ -111,26 +111,26 @@ def runTestForProject(where, args):
 		os.makedirs (logsdir)
 
 	(res, res_output) = eval_cmd_output("%s -version" %(compile_all_command()), True)
-	print res_output
+	print (res_output)
 
 	cmd = "%s -ecb -melt -l %s -logdir %s -compdir %s -ignore %s " % (compile_all_command(), location,  logsdir, compdir, os.path.join (location, "tests", "compile_all.ini"))
 	if keep_all:
 		cmd = "%s -keep passed" % (cmd) # forget about failed one .. we'll try again next time
 	if clobber:
 		cmd = "%s -clean" % (cmd)
-	print "command: %s" % (cmd)
+	print ("command: %s" % (cmd))
 	(res, res_output) = eval_cmd_output(cmd, False, True)
 	if res != 0:
 		report_failure("compile_all failed", 2)
 
-	print "# Analyze check_compilations results"
+	print ("# Analyze check_compilations results")
 	lines = re.split ("\n", res_output)
 	regexp = "^(\S+)\s+(\S+)\s+from\s+([^\s]+)\s+\(([^\)]+)\):\s*(\S+)$"
 	p = re.compile (regexp);
 	failures = [];
 	non_failures = [];
 	for line in lines:
-		print line
+		print (line)
 		p_res = p.search(line.strip(), 0)
 		if p_res:
 			# name, target, ecf, result
@@ -139,14 +139,14 @@ def runTestForProject(where, args):
 			else:
 				non_failures.append ({"name": p_res.group(2), "target": p_res.group(3), "ecf": p_res.group(4), "result": p_res.group(5)})
 	for non_fails in non_failures:
-		print "[%s] %s : %s @ %s" % (non_fails["result"], non_fails["name"], non_fails["ecf"], non_fails["target"])
+		print ("[%s] %s : %s @ %s" % (non_fails["result"], non_fails["name"], non_fails["ecf"], non_fails["target"]))
 	for fails in failures:
-		print "[FAILURE] %s : %s @ %s" % (fails["name"], fails["ecf"], fails["target"])
+		print ("[FAILURE] %s : %s @ %s" % (fails["name"], fails["ecf"], fails["target"]))
 	sleep(1)
 	if len(failures) > 0:
 		report_failure ("Failure(s) occurred", 2)
 
-	print "# End..."
+	print ("# End...")
 
 if __name__ == '__main__':
 	args = {}
