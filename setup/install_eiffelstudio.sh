@@ -7,6 +7,9 @@ ISE_BUILD=100416
 ISE_MAJOR_MINOR_NIGHTLY=18.01
 ISE_BUILD_NIGHTLY=101318
 
+ISE_MAJOR_MINOR_BETA=18.01
+ISE_BUILD_BETA=101363
+
 # Arguments
 while true; do
 	ISE_CHANNEL=$1
@@ -33,6 +36,7 @@ T_CURRENT_DIR=$(pwd)
 # This value will automatically get changed for:
 #   * latest
 #	* specific release, using major.minor.build (such as 17.05.100416)
+#   * beta
 #   * nightly
 
 DEFAULT_ISE_CHANNEL_VALUE="latest"
@@ -84,6 +88,16 @@ do_install() {
 			echo >&2 Use latest release.
 			ISE_DOWNLOAD_FILE=Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
 			ISE_DOWNLOAD_URL=http://downloads.sourceforge.net/eiffelstudio/$ISE_DOWNLOAD_FILE
+			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
+			echo >&2 Version=$major.$minor.$build
+			;;
+		beta)
+			echo >&2 Use beta release.
+			ISE_MAJOR_MINOR=$ISE_MAJOR_MINOR_BETA
+			ISE_BUILD=$ISE_BUILD_BETA
+
+			ISE_DOWNLOAD_FILE=Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
+			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/beta/${ISE_MAJOR_MINOR}/$ISE_DOWNLOAD_FILE
 			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
 			echo >&2 Version=$major.$minor.$build
 			;;
@@ -198,6 +212,10 @@ do_install() {
 			latest)
 				ln -s -f $ISE_RC_FILE eiffel_latest.rc > /dev/null
 				echo >&2 or the file `pwd`/eiffel_latest.rc
+				;;
+			beta)
+				ln -s -f $ISE_RC_FILE eiffel_beta.rc > /dev/null
+				echo >&2 or the file `pwd`/eiffel_beta.rc
 				;;
 			nightly)
 				ln -s -f $ISE_RC_FILE eiffel_nightly.rc > /dev/null

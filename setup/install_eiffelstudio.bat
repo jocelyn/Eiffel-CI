@@ -8,6 +8,9 @@ set ISE_BUILD=100416
 set ISE_MAJOR_MINOR_NIGHTLY=18.01
 set ISE_BUILD_NIGHTLY=101318
 
+set ISE_MAJOR_MINOR_BETA=18.01
+set ISE_BUILD_BETA=101363
+
 REM Overview:
 REM
 REM This script is meant for quick & easy install via:
@@ -41,6 +44,7 @@ set T_CURRENT_DIR=%CD%
 :: This value will automatically get changed for:
 ::   * latest
 ::	* specific release, using major.minor.build (such as 17.05.100416)
+::   * beta
 ::   * nightly
 
 if "%ISE_CHANNEL%" == "" set ISE_CHANNEL=%DEFAULT_ISE_CHANNEL_VALUE%
@@ -74,6 +78,7 @@ goto:eof
 	echo >&2 Using existing ISE_PLATFORM=%ISE_PLATFORM% on architecture Windows %architecture%
 
 	if "%ISE_CHANNEL%" == "latest" goto CHANNEL_LATEST
+	if "%ISE_CHANNEL%" == "beta" goto CHANNEL_BETA
 	if "%ISE_CHANNEL%" == "nightly" goto CHANNEL_NIGHTLY
 	if "%ISE_CHANNEL%" == "" goto FAILURE
 
@@ -96,6 +101,18 @@ goto POST_CHANNEL
 			;;
 goto POST_CHANNEL
 
+:CHANNEL_BETA
+			echo >&2 Use beta release.
+			set ISE_MAJOR_MINOR=%ISE_MAJOR_MINOR_BETA%
+			set ISE_BUILD=%ISE_BUILD_BETA%
+
+			set ISE_DOWNLOAD_FILE=Eiffel_%ISE_MAJOR_MINOR%_gpl_%ISE_BUILD%-%ISE_PLATFORM%.7z
+			set ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/beta/%ISE_MAJOR_MINOR%/%ISE_DOWNLOAD_FILE%
+			call:iseverParse %ISE_MAJOR_MINOR%.%ISE_BUILD%
+			echo >&2 Version=%major%.%minor%.%build%
+
+goto POST_CHANNEL
+
 :CHANNEL_NIGHTLY
 			echo >&2 Use nighlty release.
 			set ISE_MAJOR_MINOR=%ISE_MAJOR_MINOR_NIGHTLY%
@@ -106,7 +123,7 @@ goto POST_CHANNEL
 			call:iseverParse %ISE_MAJOR_MINOR%.%ISE_BUILD%
 			echo >&2 Version=%major%.%minor%.%build%
 
-	goto POST_CHANNEL
+goto POST_CHANNEL
 
 :POST_CHANNEL
 
@@ -223,6 +240,10 @@ goto POST_CHANNEL
 	if "%ISE_CHANNEL%" == "latest" (
 		copy %ISE_RC_FILE% eiffel_latest.bat > NUL
 		echo >&2 or the file %cd%\eiffel_latest.bat
+	)
+	if "%ISE_CHANNEL%" == "beta" (
+		copy %ISE_RC_FILE% eiffel_beta.bat > NUL
+		echo >&2 or the file %cd%\eiffel_beta.bat
 	)
 	if "%ISE_CHANNEL%" == "nightly" (
 		copy %ISE_RC_FILE% eiffel_nightly.bat > NUL
