@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Default values
-ISE_MAJOR_MINOR=18.01
-ISE_BUILD=101424
+ISE_MAJOR_MINOR_LATEST=18.01
+ISE_BUILD_LATEST=101424
 
 ISE_MAJOR_MINOR_NIGHTLY=18.01
 ISE_BUILD_NIGHTLY=101424
@@ -83,11 +83,37 @@ do_install() {
 	fi
 
 	case $ISE_CHANNEL in
+		nightly)
+			if [ "$ISE_MAJOR_MINOR_NIGHTLY.$ISE_BUILD_NIGHTLY" = "$ISE_MAJOR_MINOR_LATEST.$ISE_BUILD_LATEST" ]; then
+				# Use latest release!
+				echo >&2 Nightly is same as latest release.
+				ISE_CHANNEL="latest"
+			elif [ "$ISE_MAJOR_MINOR_NIGHTLY.$ISE_BUILD_NIGHTLY" = "$ISE_MAJOR_MINOR_BETA.$ISE_BUILD_BETA" ]; then
+				# Use beta release!
+				echo >&2 Nightly is same as beta release.
+				ISE_CHANNEL="beta"
+			fi
+			;;
+		beta)
+			if [ "$ISE_MAJOR_MINOR_BETA.$ISE_BUILD_BETA" = "$ISE_MAJOR_MINOR_LATEST.$ISE_BUILD_LATEST" ]; then
+				# Use latest release!
+				echo >&2 Beta is same as latest release.
+				ISE_CHANNEL="latest"
+			fi
+			;;
+		*)
+			;;
+	esac
+
+
+	case $ISE_CHANNEL in
 		latest)
 			#Use defaults .. see above.
 			echo >&2 Use latest release.
+			ISE_MAJOR_MINOR=$ISE_MAJOR_MINOR_LATEST
+			ISE_BUILD=$ISE_BUILD_LATEST
 			ISE_DOWNLOAD_FILE=Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
-			ISE_DOWNLOAD_URL=http://downloads.sourceforge.net/eiffelstudio/$ISE_DOWNLOAD_FILE
+			ISE_DOWNLOAD_URL=https://downloads.sourceforge.net/eiffelstudio/$ISE_DOWNLOAD_FILE
 			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
 			echo >&2 Version=$major.$minor.$build
 			;;
@@ -95,13 +121,12 @@ do_install() {
 			echo >&2 Use beta release.
 			ISE_MAJOR_MINOR=$ISE_MAJOR_MINOR_BETA
 			ISE_BUILD=$ISE_BUILD_BETA
-
-			ISE_DOWNLOAD_FILE=Eiffel_${ISE_MAJOR_MINOR}_gpl_${ISE_BUILD}-${ISE_PLATFORM}.tar.bz2
 			ISE_DOWNLOAD_URL=https://ftp.eiffel.com/pub/beta/${ISE_MAJOR_MINOR}/$ISE_DOWNLOAD_FILE
 			iseverParse $ISE_MAJOR_MINOR.$ISE_BUILD
 			echo >&2 Version=$major.$minor.$build
 			;;
 		nightly)
+
 			echo >&2 Use nighlty release.
 			ISE_MAJOR_MINOR=$ISE_MAJOR_MINOR_NIGHTLY
 			ISE_BUILD=$ISE_BUILD_NIGHTLY

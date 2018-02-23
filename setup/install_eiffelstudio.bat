@@ -2,8 +2,8 @@
 setlocal
 
 :: Default values
-set ISE_MAJOR_MINOR=18.01
-set ISE_BUILD=101424
+set ISE_MAJOR_MINOR_LATEST=18.01
+set ISE_BUILD_LATEST=101424
 
 set ISE_MAJOR_MINOR_NIGHTLY=18.01
 set ISE_BUILD_NIGHTLY=101424
@@ -77,11 +77,35 @@ goto:eof
 :CHECK_CHANNEL
 	echo >&2 Using existing ISE_PLATFORM=%ISE_PLATFORM% on architecture Windows %architecture%
 
-	if "%ISE_CHANNEL%" == "latest" goto CHANNEL_LATEST
-	if "%ISE_CHANNEL%" == "beta" goto CHANNEL_BETA
-	if "%ISE_CHANNEL%" == "nightly" goto CHANNEL_NIGHTLY
+	if "%ISE_CHANNEL%" == "beta" goto CHECK_BETA
+	if "%ISE_CHANNEL%" == "nightly" goto CHECK_NIGHTLY
+	if "%ISE_CHANNEL%" == "latest" goto CHECK_LATEST
 	if "%ISE_CHANNEL%" == "" goto FAILURE
+		goto CHANNEL_CUSTOM
 
+:CHECK_NIGHTLY
+if "%ISE_MAJOR_MINOR_NIGHTLY%.%ISE_BUILD_NIGHTLY" == "%ISE_MAJOR_MINOR_LATEST%.%ISE_BUILD_LATEST%" goto USE_CHANNEL_LATEST
+if "%ISE_MAJOR_MINOR_NIGHTLY%.%ISE_BUILD_NIGHTLY" == "%ISE_MAJOR_MINOR_BETA%.%ISE_BUILD_BETA%" goto USE_CHANNEL_BETA
+goto CHANNEL_NIGHTLY
+
+:CHECK_BETA
+if "%ISE_MAJOR_MINOR_NIGHTLY%.%ISE_BUILD_NIGHTLY" == "%ISE_MAJOR_MINOR_LATEST%.%ISE_BUILD_LATEST%" goto USE_CHANNEL_LATEST
+goto CHANNEL_BETA
+
+:CHECK_LATEST
+goto CHANNEL_LATEST
+
+:USE_CHANNEL_BETA
+echo >&2 Use beta channel, as it is the same.
+set ISE_CHANNEL="beta"
+goto CHECK_BETA
+
+:USE_CHANNEL_LATEST
+echo >&2 Use latest channel, as it is the same.
+set ISE_CHANNEL="latest"
+goto CHECK_LATEST
+
+:CHANNEL_CUSTOM
 			echo >&2 Use custom release %ISE_CHANNEL% if any
 			call:iseverParse %ISE_CHANNEL%
 			echo >&2 Version=%major%.%minor%.%build%
@@ -94,8 +118,11 @@ goto POST_CHANNEL
 :CHANNEL_LATEST
 			:: Use defaults .. see above.
 			echo >&2 Use latest release.
+			set ISE_MAJOR_MINOR=%ISE_MAJOR_MINOR_LATEST%
+			set ISE_BUILD=%ISE_BUILD_LATEST%
+
 			set ISE_DOWNLOAD_FILE=Eiffel_%ISE_MAJOR_MINOR%_gpl_%ISE_BUILD%-%ISE_PLATFORM%.7z
-			set ISE_DOWNLOAD_URL=http://downloads.sourceforge.net/eiffelstudio/%ISE_DOWNLOAD_FILE%
+			set ISE_DOWNLOAD_URL=https://downloads.sourceforge.net/eiffelstudio/%ISE_DOWNLOAD_FILE%
 			call:iseverParse %ISE_MAJOR_MINOR%.%ISE_BUILD%
 			echo >&2 Version=%major%.%minor%.%build%
 			;;
