@@ -224,7 +224,7 @@ do_install() {
 	echo \# Setup for EiffelStudio ${ISE_MAJOR_MINOR}.${ISE_BUILD} > $ISE_RC_FILE
 	echo export ISE_PLATFORM=$ISE_PLATFORM >> $ISE_RC_FILE
 	echo export ISE_EIFFEL=$ISE_EIFFEL >> $ISE_RC_FILE
-	echo export PATH=\$PATH:\$ISE_EIFFEL/studio/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/tools/spec/\$ISE_PLATFORM/bin >> $ISE_RC_FILE
+	echo export PATH=\$ISE_EIFFEL/studio/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/tools/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/library/gobo/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/esbuilder/spec/\$ISE_PLATFORM/bin:\$PATH >> $ISE_RC_FILE
 	cat $ISE_RC_FILE
 
 	#export ISE_PLATFORM=$ISE_PLATFORM

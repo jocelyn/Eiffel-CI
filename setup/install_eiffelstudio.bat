@@ -248,7 +248,7 @@ goto POST_CHANNEL
 	echo REM Setup for EiffelStudio %ISE_MAJOR_MINOR%.%ISE_BUILD%> %ISE_RC_FILE%
 	echo set ISE_PLATFORM=%ISE_PLATFORM%>> %ISE_RC_FILE%
 	echo set ISE_EIFFEL=%ISE_EIFFEL%>> %ISE_RC_FILE%
-	echo set PATH=%PATH%;%%ISE_EIFFEL%%\studio\spec\%%ISE_PLATFORM%%\bin;%%ISE_EIFFEL%%\tools\spec\%%ISE_PLATFORM%%\bin>> %ISE_RC_FILE%
+	echo set PATH=%%ISE_EIFFEL%%\studio\spec\%%ISE_PLATFORM%%\bin;%%ISE_EIFFEL%%\tools\spec\%%ISE_PLATFORM%%\bin;%%ISE_EIFFEL%%\library\gobo\spec\%%$ISE_PLATFORM%%\bin;%%ISE_EIFFEL%%\esbuilder\spec\%%ISE_PLATFORM%%\bin;%%PATH%%>> %ISE_RC_FILE%
 	type %ISE_RC_FILE%
 
 	call %ISE_RC_FILE%

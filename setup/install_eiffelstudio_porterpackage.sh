@@ -12,11 +12,11 @@ echo >&2 "Requires: make gcc bzip2 libxtst-dev libgtk2.0-dev"
 TMP_SAFETY_DELAY=10
 
 # This script is meant for quick & easy install via:
-#   $ curl -fsSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.sh -o get-eiffelstudio.sh
+#   $ curl -fsSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio_porterpackage.sh -o get-eiffelstudio.sh
 #   $ sh get-eiffelstudio.sh
 #
 # or
-#   $ curl -sSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio.sh | sh
+#   $ curl -sSL https://github.com/jocelyn/Eiffel-CI/raw/master/setup/install_eiffelstudio_porterpackage.sh | sh
 #
 # (Inspired by get.docker.com)
 
@@ -169,7 +169,7 @@ do_install() {
 		echo \# Setup for EiffelStudio ${ISE_MAJOR_MINOR}.${ISE_BUILD} > $ISE_RC_FILE
 		echo export ISE_PLATFORM=$ISE_PLATFORM >> $ISE_RC_FILE
 		echo export ISE_EIFFEL=$ISE_EIFFEL >> $ISE_RC_FILE
-		echo export PATH=\$PATH:\$ISE_EIFFEL/studio/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/tools/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/library/gobo/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/esbuilder/spec/\$ISE_PLATFORM/bin >> $ISE_RC_FILE
+		echo export PATH=\$ISE_EIFFEL/studio/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/tools/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/library/gobo/spec/\$ISE_PLATFORM/bin:\$ISE_EIFFEL/esbuilder/spec/\$ISE_PLATFORM/bin:\$PATH >> $ISE_RC_FILE
 		cat $ISE_RC_FILE
 	else
 		echo >&2 "Compilation failed !"
