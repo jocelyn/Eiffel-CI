@@ -58,7 +58,11 @@ command_exists() {
 do_install() {
 	echo >&2 "Executing eiffelstudio install script ... ($ISE_CHANNEL)"
 
-	architecture=$(uname -m)
+	if [ -n "$HOSTTYPE" ]; then
+		architecture=$HOSTTYPE
+	else
+		architecture=$(uname -m)
+	fi
 	if [ -z "$ISE_PLATFORM" ]; then
 		case $architecture in
 			# officially supported
